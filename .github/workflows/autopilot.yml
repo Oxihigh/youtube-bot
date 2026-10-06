@@ -1,0 +1,112 @@
+name: AutoShorts 3x Daily Autopilot
+
+on:
+  # Scheduled 3 times every day at peak viral viewing hours (UTC):
+  # Slot 1: 08:00 UTC (Morning peak)
+  # Slot 2: 14:00 UTC (Midday peak)
+  # Slot 3: 20:00 UTC (Evening prime time)
+  schedule:
+    - cron: '0 8 * * *'
+    - cron: '0 14 * * *'
+    - cron: '0 20 * * *'
+
+  # Manual on-demand trigger (Run anytime from GitHub UI or mobile)
+  workflow_dispatch:
+    inputs:
+      niche:
+        description: 'Select Niche (or leave Auto-Rotate)'
+        required: true
+        default: 'Auto-Rotate'
+        type: choice
+        options:
+          - 'Auto-Rotate'
+          - 'Psychology Facts'
+          - 'Dark History'
+          - 'Mind-Blowing Science'
+          - 'Stoicism & Philosophy'
+          - 'Tech & AI Secrets'
+          - 'Unsolved Mysteries'
+      auto_upload:
+        description: 'Upload directly to YouTube'
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  produce-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install System Dependencies & FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libass-dev fonts-liberation
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Configure Secrets & YouTube OAuth
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          YOUTUBE_CLIENT_SECRETS_JSON: ${{ secrets.YOUTUBE_CLIENT_SECRETS_JSON }}
+          YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+        run: |
+          echo "GEMINI_API_KEY=${GEMINI_API_KEY}" > .env
+          if [ -n "$YOUTUBE_CLIENT_SECRETS_JSON" ]; then
+            echo "$YOUTUBE_CLIENT_SECRETS_JSON" > client_secrets.json
+          fi
+          if [ -n "$YOUTUBE_TOKEN_JSON" ]; then
+            echo "$YOUTUBE_TOKEN_JSON" > token.json
+          fi
+
+      - name: Determine Niche & Execute Generation
+        run: |
+          INPUT_NICHE="${{ github.event.inputs.niche || 'Auto-Rotate' }}"
+          AUTO_UPLOAD="${{ github.event.inputs.auto_upload || 'true' }}"
+          
+          # Auto-rotate niche based on current hour if not explicitly set
+          CURRENT_HOUR=$(date -u +%H)
+          if [ "$INPUT_NICHE" = "Auto-Rotate" ]; then
+            if [ "$CURRENT_HOUR" -ge 6 ] && [ "$CURRENT_HOUR" -lt 12 ]; then
+              CHOSEN_NICHE="Psychology Facts"
+            elif [ "$CURRENT_HOUR" -ge 12 ] && [ "$CURRENT_HOUR" -lt 18 ]; then
+              CHOSEN_NICHE="Mind-Blowing Science"
+            else
+              CHOSEN_NICHE="Dark History"
+            fi
+          else
+            CHOSEN_NICHE="$INPUT_NICHE"
+          fi
+          
+          echo "============================================="
+          echo "🚀 Generating Short # for Slot: UTC Hour $CURRENT_HOUR"
+          echo "🎯 Target Niche: $CHOSEN_NICHE"
+          echo "📤 Auto-Upload to YouTube: $AUTO_UPLOAD"
+          echo "============================================="
+          
+          CMD="python main.py --generate --niche \"$CHOSEN_NICHE\""
+          if [ "$AUTO_UPLOAD" = "true" ]; then
+            CMD="$CMD --auto-upload"
+          fi
+          
+          eval $CMD
+
+      - name: Upload Generated Video as Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generated-shorts-${{ github.run_id }}
+          path: output/*.mp4
+          retention-days: 7

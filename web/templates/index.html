@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoShorts AI - Fully Autonomous Faceless YouTube Channel</title>
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2>AutoShorts AI</h2>
+                    <span class="badge-tag">AUTONOMOUS 2.0</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-tab="create" id="nav-create-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+                    Create Short
+                </button>
+                <button class="nav-item" data-tab="library" id="nav-library-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+                    Video Gallery (<span id="video-count">0</span>)
+                </button>
+                <button class="nav-item" data-tab="scheduler" id="nav-scheduler-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Auto-Pilot Cron
+                </button>
+                <button class="nav-item" data-tab="settings" id="nav-settings-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    API & YouTube
+                </button>
+            </nav>
+
+            <div class="system-status-box">
+                <div class="status-indicator-row">
+                    <span class="status-dot green"></span>
+                    <span class="status-name">FFmpeg Engine</span>
+                    <span class="status-val">v9.0 Active</span>
+                </div>
+                <div class="status-indicator-row">
+                    <span class="status-dot green"></span>
+                    <span class="status-name">Neural Edge-TTS</span>
+                    <span class="status-val">Connected</span>
+                </div>
+                <div class="status-indicator-row">
+                    <span class="status-dot" id="gemini-status-dot"></span>
+                    <span class="status-name">Gemini 2.5 AI</span>
+                    <span class="status-val" id="gemini-status-text">Checking...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- TAB 1: Studio / Creator -->
+            <section id="tab-create" class="tab-pane active">
+                <header class="section-header">
+                    <div>
+                        <h1 class="page-title">Generate Autonomous YouTube Short</h1>
+                        <p class="page-subtitle">Fully automated pipeline: Viral research &rarr; 50s Script &rarr; Neural Voice &rarr; 9:16 AI Imagery &rarr; Karaoke Subtitles &rarr; YouTube Optimization.</p>
+                    </div>
+                </header>
+
+                <div class="creator-grid">
+                    <!-- Left Form Options -->
+                    <div class="card glass-card">
+                        <form id="generate-form">
+                            <div class="form-group">
+                                <label for="niche-select">1. Select Target Niche</label>
+                                <select id="niche-select" class="form-control">
+                                    {% for name, item in niches.items() %}
+                                    <option value="{{ name }}">{{ name }} ({{ item.tone }})</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-hint" id="niche-description">Mind-bending psychological tricks, human behavior secrets, and dark psychology.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="custom-prompt">2. Topic or Angle (Optional)</label>
+                                <input type="text" id="custom-prompt" class="form-control" placeholder="Leave empty for AI auto-trend research, or type a custom topic...">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="voice-select">3. Voiceover Actor</label>
+                                    <select id="voice-select" class="form-control">
+                                        {% for v_id, v_info in voices.items() %}
+                                        <option value="{{ v_id }}">{{ v_info.label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="style-select">4. Visual Art Aesthetic</label>
+                                    <select id="style-select" class="form-control">
+                                        {% for s_id, s_desc in styles.items() %}
+                                        <option value="{{ s_id }}">{{ s_id.replace('_', ' ').title() }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group upload-toggle-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="auto-upload-check">
+                                    <span class="checkmark"></span>
+                                    <span>Directly Upload / Schedule to YouTube Channel</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" id="start-btn" class="primary-btn glow-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                                <span>1-Click Generate & Render Short</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Right Progress & Preview Area -->
+                    <div class="card glass-card preview-card">
+                        <div id="idle-preview" class="empty-state">
+                            <div class="empty-icon">&#9654;</div>
+                            <h3>Ready to Produce</h3>
+                            <p>Configure parameters on the left and hit generate. The autonomous pipeline will research, script, record, generate images, and render a 1080x1920 MP4 ready for YouTube Shorts.</p>
+                        </div>
+
+                        <!-- Live Progress Overlay -->
+                        <div id="progress-container" class="progress-panel" style="display: none;">
+                            <div class="progress-header">
+                                <div class="pulsing-spinner"></div>
+                                <div class="progress-status-info">
+                                    <h4 id="progress-step-title">Initializing Autonomous Engine...</h4>
+                                    <span id="progress-percentage">0%</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar-track">
+                                <div id="progress-bar-fill" class="progress-bar-fill" style="width: 5%;"></div>
+                            </div>
+
+                            <div class="pipeline-steps-list">
+                                <div class="step-item" id="step-1"><span class="step-badge">1</span> Topic & Trend Discovery</div>
+                                <div class="step-item" id="step-2"><span class="step-badge">2</span> Viral Script & SEO Engine</div>
+                                <div class="step-item" id="step-3"><span class="step-badge">3</span> Edge Neural Voiceover</div>
+                                <div class="step-item" id="step-4"><span class="step-badge">4</span> AI 9:16 Scene Generation</div>
+                                <div class="step-item" id="step-5"><span class="step-badge">5</span> Kinetic Karaoke Subtitles</div>
+                                <div class="step-item" id="step-6"><span class="step-badge">6</span> Music & Audio Ducking</div>
+                                <div class="step-item" id="step-7"><span class="step-badge">7</span> FFmpeg Motion Assembly</div>
+                                <div class="step-item" id="step-8"><span class="step-badge">8</span> YouTube Publishing</div>
+                            </div>
+                        </div>
+
+                        <!-- Result Player Overlay -->
+                        <div id="result-container" class="result-panel" style="display: none;">
+                            <div class="result-header">
+                                <h3 id="result-title">Title Here</h3>
+                                <div class="result-tags-row" id="result-tags"></div>
+                            </div>
+                            <div class="video-preview-wrapper">
+                                <video id="final-video-player" controls playsinline></video>
+                            </div>
+                            <div class="result-actions">
+                                <a id="download-video-btn" href="#" download class="btn-secondary">
+                                    Download MP4
+                                </a>
+                                <button id="copy-metadata-btn" class="btn-secondary">
+                                    Copy SEO Metadata
+                                </button>
+                                <button id="upload-now-btn" class="btn-accent">
+                                    Upload to YouTube
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: Video Gallery -->
+            <section id="tab-library" class="tab-pane">
+                <header class="section-header">
+                    <div>
+                        <h1 class="page-title">Completed YouTube Shorts Gallery</h1>
+                        <p class="page-subtitle">All produced videos stored locally in /output ready for instant streaming and YouTube upload.</p>
+                    </div>
+                    <button id="refresh-gallery-btn" class="btn-secondary">Refresh</button>
+                </header>
+
+                <div id="gallery-grid" class="gallery-grid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- TAB 3: Auto-Pilot Scheduler -->
+            <section id="tab-scheduler" class="tab-pane">
+                <header class="section-header">
+                    <div>
+                        <h1 class="page-title">Auto-Pilot Channel Automation</h1>
+                        <p class="page-subtitle">Set your channel on 100% autopilot. Videos are generated, rendered, and queued on a recurring schedule.</p>
+                    </div>
+                </header>
+
+                <div class="card glass-card schedule-card">
+                    <div class="schedule-switch-row">
+                        <div>
+                            <h3>Autonomous Background Generation</h3>
+                            <p>Automatically produce and queue fresh YouTube Shorts on your scheduled frequency.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="cron-enabled-check">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 1.5rem;">
+                        <div class="form-group">
+                            <label>Production Frequency</label>
+                            <select id="cron-frequency" class="form-control">
+                                <option value="1_day">1 Video Every Day (Recommended)</option>
+                                <option value="2_day">2 Videos Every Day (Morning & Evening)</option>
+                                <option value="3_day">3 Videos Every Day (High Frequency Growth)</option>
+                                <option value="1_week">1 Video Every Week</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Default Autopilot Niche</label>
+                            <select id="cron-niche" class="form-control">
+                                {% for name in niches.keys() %}
+                                <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="cron-status-card">
+                        <h4>Autopilot CLI Cron Command:</h4>
+                        <div class="code-box">
+                            <code>python main.py --cron --frequency daily --niche "Psychology Facts" --auto-upload</code>
+                            <button class="btn-copy" onclick="navigator.clipboard.writeText('python main.py --cron --frequency daily --niche &quot;Psychology Facts&quot; --auto-upload'); alert('Copied CLI cron command!');">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: API & YouTube Settings -->
+            <section id="tab-settings" class="tab-pane">
+                <header class="section-header">
+                    <div>
+                        <h1 class="page-title">API Keys & YouTube Channel Setup</h1>
+                        <p class="page-subtitle">Configure your Gemini API key and YouTube OAuth credentials.</p>
+                    </div>
+                </header>
+
+                <div class="settings-grid">
+                    <div class="card glass-card">
+                        <h3>Google Gemini API Key</h3>
+                        <p>Used for AI topic research, viral scriptwriting, and YouTube SEO tag generation. Free tier available.</p>
+                        <form id="save-gemini-form" style="margin-top: 1rem;">
+                            <div class="form-group">
+                                <label for="gemini-key-input">Gemini API Key</label>
+                                <input type="password" id="gemini-key-input" class="form-control" placeholder="AIzaSy...">
+                            </div>
+                            <div class="button-row">
+                                <button type="submit" class="primary-btn">Save Key to .env</button>
+                                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="btn-secondary">Get Free Key &rarr;</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card glass-card">
+                        <h3>YouTube Data API v3 OAuth</h3>
+                        <p>Enables 1-click automatic uploads and video scheduling to your channel.</p>
+                        
+                        <div class="setup-steps-list">
+                            <div class="setup-step">
+                                <strong>Step 1:</strong> Visit <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a> and create a project.
+                            </div>
+                            <div class="setup-step">
+                                <strong>Step 2:</strong> Enable <code>YouTube Data API v3</code> in APIs & Services.
+                            </div>
+                            <div class="setup-step">
+                                <strong>Step 3:</strong> Create OAuth 2.0 Client ID (type: <em>Desktop App</em>).
+                            </div>
+                            <div class="setup-step">
+                                <strong>Step 4:</strong> Download credentials and rename to <code>client_secrets.json</code> in this project folder.
+                            </div>
+                        </div>
+
+                        <div id="youtube-connection-status" class="alert-box info-box" style="margin-top: 1.2rem;">
+                            Checking YouTube credentials...
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

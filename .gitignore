@@ -1,0 +1,20 @@
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Environment Variables & Secrets
+.env
+client_secrets.json
+token.json
+
+# Build & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+
+# Temp directory & output videos (video files stay local / artifacts)
+temp/*
+!temp/.gitkeep
+output/*.mp4

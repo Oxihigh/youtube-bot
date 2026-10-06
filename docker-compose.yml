@@ -1,0 +1,19 @@
+services:
+  autoshorts:
+    build: .
+    container_name: autoshorts-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEFAULT_NICHE=Psychology Facts
+      - AUTO_UPLOAD_DEFAULT=false
+      - PRIVACY_STATUS=private
+    volumes:
+      - ./output:/app/output
+      - ./assets:/app/assets
+      - ./client_secrets.json:/app/client_secrets.json:ro
+      - ./token.json:/app/token.json
+    env_file:
+      - .env
